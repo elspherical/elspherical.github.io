@@ -1,0 +1,19 @@
+/* ========== GLOBAL STYLES ========== */
+:root {
+  --bg-color: #f9fafb;
+  --text-color: #1f2937;
+  --accent-color: #2563eb; /* blue accent */
+  --muted-color: #6b7280;
+  --card-bg: #ffffff;
+  --radius: 1rem;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  --font-heading: "Montserrat", "Helvetica Neue", sans-serif;
+  --font-body: "Inter", "Roboto", "Open Sans", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

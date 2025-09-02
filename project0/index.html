@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 0</title>
+    <style>
+        body {
+            font-family: Palatino, serif;
+            width: 100%;
+        }
 
+        .button {
+            margin: 10px;
+            padding: 10px;
+            font-family: Palatino, serif;
+            transition-duration: 0.4s;
+        }
+
+        .button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .two_columns h2 {
+            text-align: right;
+        }
+
+        .part {
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        .part_title {
+            display: inline-block;
+        }
+
+        .part hr {
+            position: relative;
+            right: 5px;
+            top: -20px;
+        }
+
+        .two_columns {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+        }
+
+        .images {
+            display: flex;
+            flex-direction: row;
+            width: 50%;       /* two images together take up half the page */
+            gap: 10px;
+            margin: 0
+        }
+
+        .image {
+            width: 50%;       /* each image is half of the left column */
+            height: auto;     /* preserve aspect ratio */
+            object-fit: cover; /* ensures no stretching */
+        }
+
+        .text_desc {
+            width: 40%;        /* block takes up 70% of its container */
+            margin-left: auto; /* pushes the block to the right */
+            text-align: left;  /* text inside stays left-aligned */
+        }
+
+        .dolly {
+            text-align: center;
+        }
+        .dolly hr {
+            width: 50%;
+        }
+        .dolly img {
+            max-width: 25%;
+        }
+        .dolly_content {
+            gap: 25px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+    </style>
+</head>
+<body>
+    <a href = "../index.html">
+        <button class = "button">Return to home page.</button>
+    </a>
+    <h1>Project 0: Becoming Friends With Your Camera 📸</h1>
+
+        <div class= "part">
+            <div class="two_columns">
+                <div>
+                    <h2 class="part_title">Part 1: Selfie</h2>
+                </div>
+                <hr>
+                <div class="images">
+                    <img class="image" src="closeup_selfie.jpeg" alt="close-up selfie">
+                    <img class="image" src="far_selfie.jpeg" alt="far-away selfie">
+                </div>
+                <h2 class="part_title">Part 2: Architecture</h2>
+                <hr>
+                <div class="images">
+                    <img class="image" src="closeup_arch.jpeg" alt="close-up architecture">
+                    <img class="image" src="far_arch.jpeg" alt="far-away architecture">
+                </div>
+            </div>
+        </div>
+        <div class = "part">
+            <div class = "two_columns">
+                <div class = "text_desc">
+                    <p> <b>Picture 1:</b> close-up photo <br> <b>Picture 2:</b> far-away + zoom-in photo  <br><br> These are two pictures of my beautiful roommate Christy. While it looks like the backgrounds are completely different, the shelf in the second image is just hidden behind her in the first. </p>
+                </div>
+                <div class = "text_desc">
+                    <p> <b>Picture 1:</b> close-up photo <br> <b>Picture 2:</b> far-away + zoom-in photo  <br><br> These photos of Parker Street look very different because the zoomed picture captures much less of the sky and closer details, even though the road sign and building are in roughly the same location. </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="part">
+        <div class = "dolly">
+            <h2 class="part_title">Part 3: Dolly Zoom</h2>
+            <hr>
+            <div class = "dolly_content">
+            <img src = "dolly.gif" alt = "dolly zoom gif">
+            <p style = "width: 30%">A small dolly zoom (I ran out of space to step backwards in my room) of my stuffed animals! <br><br> For all the examples in this project, close-up images see the subject as much closer than other objects. Far-away pictures that have been zoomed in do not see as drastic of a difference between the depth of the subject and the depth of the background, hence "flattening" the image.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
