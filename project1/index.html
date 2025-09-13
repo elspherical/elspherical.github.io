@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 0</title>
+    <style>
+        body {
+            font-family: Palatino, serif;
+            width: 100%;
+        }
+
+        .button {
+            margin: 10px;
+            padding: 10px;
+            font-family: Palatino, serif;
+            transition-duration: 0.4s;
+        }
+
+        .button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            opacity: 0;           
+            transform: translateX(50px);  
+            animation: fadeSlideIn 0.7s ease-out forwards;
+        }
+
+        .two_columns h2 {
+            text-align: right;
+        }
+
+        .part {
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        .part_title {
+            display: inline-block;
+        }
+
+        .part hr {
+            position: relative;
+            right: 5px;
+            top: -20px;
+        }
+
+        .two_columns {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+        }
+
+        .images {
+            display: flex;
+            flex-direction: row;
+            width: 50%; 
+            gap: 10px;
+            margin: 0
+        }
+
+        .image {
+            width: 50%;  
+            height: auto;  
+            object-fit: cover; 
+        }
+
+        .text_desc {
+            width: 40%;    
+            margin-left: auto; 
+            text-align: left; 
+        }
+
+        .dolly {
+            text-align: center;
+        }
+        .dolly hr {
+            width: 50%;
+        }
+        .dolly img {
+            max-width: 25%;
+        }
+        .dolly_content {
+            gap: 25px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .thin-box {
+            border: 1px solid black;
+            padding: 12px 16px;
+            margin: 20px auto;
+            max-width: 75vw;
+            background: #fff;
+            line-height: 1.4;
+            text-align: center;
+
+            /* animation */
+            opacity: 0;                  
+            transform: translateY(20px); 
+            animation: fadeSlideIn 0.7s ease-out forwards;
+        }
+
+        .full-width-header {
+            width: 100%;  
+            text-align: center;   
+            background-color: hsl(293, 100%, 97%); 
+            padding: 15px 0; 
+            font-weight: 600; 
+        }
+
+        .caption {
+            text-align: center;
+        }
+
+        /* for naive grid */
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 0 50px;
+        }
+
+        .grid-item {
+            border: 1px solid #f9dff9;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-bottom: 10px;
+            border-radius: 5px;
+            background-color: rgb(245, 249, 255);
+        }
+
+        .grid-item h2 {
+            font-family: 'Raleway';
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .two_columns {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            width: 100%; 
+        }
+        
+        /* original tall strip image */
+        .left-column {
+            flex: 1;
+        }
+        .tall-image {
+            width: 100%; 
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* right column: before and after, naive */
+        .right-column {
+            flex: 2;      
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+        }
+        .square-image {
+            width: 100%; 
+            height: auto;
+            object-fit: cover;
+        }
+
+        /* sobel display */
+
+        .sobel-grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 100vw;
+            margin: 0 auto;
+        }
+
+        .sobel-grid-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .sobel-grid-item h2 {
+            font-family: 'Raleway';
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sobel-two-images {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .sobel-image {
+            max-width: 48%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .sobel-image img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .sobel-caption {
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* animation */
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <a href="../index.html">
+        <button class="button">Return to home page.</button>
+    </a>
+
+    <h1>Project 1: Colorizing the Prokudin-Gorskii photo collection 🍓🥝🫐</h1>
+
+    <!-- Thin black border box -->
+    <div class="thin-box">
+        <b>This project is aligning three extracted color channel images for images from the Prokudin-Gorskii photo collection. </b><br><br>
+        In order to do this, I aligned the green and red channels to the blue channel to maximize the Normalized Cross-Correlation (NCC) for each case; NCC measures how similar images are while being lighting-insensitive. To make this process more efficient for large images, I used an image pyramid so that I found the most optimal incremental adjustments starting at the coarsest level. This way, the adjustments needed at each level of the image pyramid were much smaller and thus made computation cheaper. <br><br>
+        <i><b>Some details I accounted for were:</b> <br><b>1.</b> cropping edges of the images before aligning to prevent the noisy color borders from being a confounding factor <br><b>2.</b> adjusting the range of shifts to check in order to find the best spot between aligning too little and being computationally expensive or deviating <br><b>3.</b> cropping the edges of the final stacked images for a clean finish </i>
+        <br><br>
+        I also implemented a second version using Sobel edge detection to align the images, which proved to more accurate, as explained below. 
+    </div>
+
+    <br>
+
+    <h2 class="full-width-header">Naive Implementation</h2>
+    <p style = "text-align: center; width: 70%; margin: 0 auto"><i>For each of these examples, the left image is the original 3-image strip with the RGB channel images. The upper right image is the unaligned stacked image (no changes) and the lower right image is the aligned image using my implementation.</i></p>
+    
+    <br>
+
+<div class="grid-container">
+
+    <div class="grid-item">
+        <h2>Cathedral</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data/cathedral.jpg" alt="Cathedral image" class="tall-image">
+                <p class="caption">green filter shift: (2, 5)<br>red filter shift: (3, 12)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/cathedral_out.jpg" alt="Original cathedral aligned image" class="square-image">
+                <img src="out/cathedral_out.jpg" alt="Cathedral aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Church</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/church.jpg" alt="Church image" class="tall-image">
+                <p class="caption">green filter shift: (4, 25)<br>red filter shift: (-4, 58)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/church_out.jpg" alt="Original church aligned image" class="square-image">
+                <img src="out/church_out.jpg" alt="Church aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Emir</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/emir.jpg" alt="Emir image" class="tall-image">
+                <p class="caption" style="text-align: left">green filter shift: (24, 49)<br>red filter shift: (55, 103)<br><br> This image is the only slightly misaligned image that results from my implementation. I believe this may be because the search range in my image pyramid is not sufficient for this image's amount of alignment, or the three color channels have a large difference in a specific feature that is causing the NCC calculation to be confounded.</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/emir_out.jpg" alt="Original emir aligned image" class="square-image">
+                <img src="out/emir_out.jpg" alt="Emir aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Greenhouse</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data/greenhouse.jpg" alt="Greenhouse image" class="tall-image">
+                <p class="caption">green filter shift: (3, 6)<br>red filter shift: (4, 13)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/greenhouse_out.jpg" alt="Original greenhouse aligned image" class="square-image">
+                <img src="out/greenhouse_out.jpg" alt="Greenhouse aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Harvesters</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/harvesters.jpg" alt="Harvesters image" class="tall-image">
+                <p class="caption">green filter shift: (16, 59)<br>red filter shift: (13, 123)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/harvesters_out.jpg" alt="Original harvesters aligned image" class="square-image">
+                <img src="out/harvesters_out.jpg" alt="Harvesters aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Icon</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/icon.jpg" alt="Icon image" class="tall-image">
+                <p class="caption">green filter shift: (17, 41)<br>red filter shift: (23, 89)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/icon_out.jpg" alt="Original icon aligned image" class="square-image">
+                <img src="out/icon_out.jpg" alt="Icon aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Italil</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/italil.jpg" alt="Italil image" class="tall-image">
+                <p class="caption">green filter shift: (21, 38)<br>red filter shift: (35, 76)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/italil_out.jpg" alt="Original italil aligned image" class="square-image">
+                <img src="out/italil_out.jpg" alt="Italil aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Lastochikino</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/lastochikino.jpg" alt="Lastochikino image" class="tall-image">
+                <p class="caption">green filter shift: (-2, -2)<br>red filter shift: (-8, 75)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/lastochikino_out.jpg" alt="Original lastochikino aligned image" class="square-image">
+                <img src="out/lastochikino_out.jpg" alt="Lastochikino aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Lugano</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/lugano.jpg" alt="Lugano image" class="tall-image">
+                <p class="caption">green filter shift: (-16, 41)<br>red filter shift: (-29, 92)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/lugano_out.jpg" alt="Original lugano aligned image" class="square-image">
+                <img src="out/lugano_out.jpg" alt="Lugano aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Melons</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/melons.jpg" alt="Melons image" class="tall-image">
+                <p class="caption">green filter shift: (10, 81)<br>red filter shift: (13, 178)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/melons_out.jpg" alt="Original melons aligned image" class="square-image">
+                <img src="out/melons_out.jpg" alt="Melons aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Milan</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data/milan.jpg" alt="Milan image" class="tall-image">
+                <p class="caption">green filter shift: (1, 6)<br>red filter shift: (3, 13)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/milan_out.jpg" alt="Original milan aligned image" class="square-image">
+                <img src="out/milan_out.jpg" alt="Milan aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Monastery</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data/monastery.jpg" alt="Monastery image" class="tall-image">
+                <p class="caption">green filter shift: (2, -3)<br>red filter shift: (2, 3)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/monastery_out.jpg" alt="Original monastery aligned image" class="square-image">
+                <img src="out/monastery_out.jpg" alt="Monastery aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Rainbow</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data/rainbow.jpg" alt="Rainbow image" class="tall-image">
+                <p class="caption">green filter shift: (1, 0)<br>red filter shift: (8, 0)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/rainbow_out.jpg" alt="Original rainbow aligned image" class="square-image">
+                <img src="out/rainbow_out.jpg" alt="Rainbow aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Self Portrait</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/self_portrait.jpg" alt="Self Portrait image" class="tall-image">
+                <p class="caption">green filter shift: (29, 78)<br>red filter shift: (37, 176)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/self_portrait_out.jpg" alt="Original self portrait aligned image" class="square-image">
+                <img src="out/self_portrait_out.jpg" alt="Self Portrait aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Siren</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/siren.jpg" alt="Siren image" class="tall-image">
+                <p class="caption">green filter shift: (-6, 49)<br>red filter shift: (-25, 95)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/siren_out.jpg" alt="Original siren aligned image" class="square-image">
+                <img src="out/siren_out.jpg" alt="Siren aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Three Generations</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data_tif/three_generations.jpg" alt="Three Generations image" class="tall-image">
+                <p class="caption">green filter shift: (14, 53)<br>red filter shift: (11, 112)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/three_generations_out.jpg" alt="Original three generations aligned image" class="square-image">
+                <img src="out/three_generations_out.jpg" alt="Three Generations aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-item">
+        <h2>Tobolsk</h2>
+        <div class="two_columns">
+            <div class="left-column">
+                <img src="data/tobolsk.jpg" alt="Tobolsk image" class="tall-image">
+                <p class="caption">green filter shift: (3, 3)<br>red filter shift: (3, 6)</p>
+            </div>
+            <div class="right-column">
+                <img src="original_out/tobolsk_out.jpg" alt="Original tobolsk aligned image" class="square-image">
+                <img src="out/tobolsk_out.jpg" alt="Tobolsk aligned image" class="square-image">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<br>
+<h2 class="full-width-header">Edge Detector Implementation</h2>
+<p style = "text-align: center; width: 70%; margin: 0 auto"><i>I also tried a Sobel edge detector, which turned out to be more accurate in general, especially for the emir.tif example. This edge detector highlights edges (where the color/brightness changes suddenly), which is useful for image alignment because there are no subtle differences in color or brightness in the images to account for. </i></p>
+
+<br>
+
+<div class="sobel-grid-container">
+
+    <div class="sobel-grid-item">
+        <h2>Cathedral</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/cathedral_out.jpg" alt="Cathedral Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/cathedral_out.jpg" alt="Cathedral Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Church</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/church_out.jpg" alt="Church Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/church_out.jpg" alt="Church Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Emir</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/emir_out.jpg" alt="Emir Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/emir_out.jpg" alt="Emir Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Greenhouse</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/greenhouse_out.jpg" alt="Greenhouse Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/greenhouse_out.jpg" alt="Greenhouse Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Harvesters</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/harvesters_out.jpg" alt="Harvesters Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/harvesters_out.jpg" alt="Harvesters Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Icon</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/icon_out.jpg" alt="Icon Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/icon_out.jpg" alt="Icon Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Italil</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/italil_out.jpg" alt="Italil Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/italil_out.jpg" alt="Italil Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Lastochikino</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/lastochikino_out.jpg" alt="Lastochikino Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/lastochikino_out.jpg" alt="Lastochikino Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Lugano</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/lugano_out.jpg" alt="Lugano Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/lugano_out.jpg" alt="Lugano Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Melons</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/melons_out.jpg" alt="Melons Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/melons_out.jpg" alt="Melons Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Milan</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/milan_out.jpg" alt="Milan Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/milan_out.jpg" alt="Milan Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Monastery</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/monastery_out.jpg" alt="Monastery Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/monastery_out.jpg" alt="Monastery Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Rainbow</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/rainbow_out.jpg" alt="Rainbow Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/rainbow_out.jpg" alt="Rainbow Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Self Portrait</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/self_portrait_out.jpg" alt="Self Portrait Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/self_portrait_out.jpg" alt="Self Portrait Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Siren</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/siren_out.jpg" alt="Siren Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/siren_out.jpg" alt="Siren Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Three Generations</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/three_generations_out.jpg" alt="Three Generations Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/three_generations_out.jpg" alt="Three Generations Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sobel-grid-item">
+        <h2>Tobolsk</h2>
+        <div class="sobel-two-images">
+            <div class="sobel-image">
+                <img src="out/tobolsk_out.jpg" alt="Tobolsk Naive">
+                <p class="sobel-caption">Naive alignment with NCC</p>
+            </div>
+            <div class="sobel-image">
+                <img src="sobel_out/tobolsk_out.jpg" alt="Tobolsk Sobel">
+                <p class="sobel-caption">Alignment with Sobel edge detection</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+
