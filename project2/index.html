@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 2</title>
+  <style>
+    body {
+      font-family: Palatino, serif;
+      width: 100%;
+      line-height: 1.5;
+      margin: 0;
+      background: #fff;
+    }
+
+    .button {
+      margin: 10px;
+      padding: 10px;
+      font-family: Palatino, serif;
+      transition-duration: 0.4s;
+    }
+
+    .button:hover {
+      background-color: black;
+      color: white;
+    }
+
+    .content {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 80px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin: 30px 0 15px;
+    }
+
+    h3 {
+      margin: 20px 0 10px;
+    }
+
+    .row {
+        display: flex;
+        max-width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin: 20px 0;
+        flex-wrap: nowrap;
+        overflow: hidden; 
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px; 
+    }
+
+    figure {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin: 0;
+    }
+
+    figure img {
+        max-height: 400px;
+        height: auto;
+        width: auto;
+        display: block;
+        max-width: 100%;
+    }
+
+    figcaption {
+        width: 100%;
+        text-align: center;
+        font-size: 0.9em;
+        font-style: italic;
+        margin-top: 5px;
+    }
+
+    hr {
+      margin: 50px 0;
+    }
+
+    p {
+      max-width: 90%;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .symbol {
+      font-size: 2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <a href="../index.html">
+    <button class="button">Return to home page.</button>
+  </a>
+
+  <div class="content">
+    <h1>Project 2: Fun with Filters and Frequencies! 🦕🦄</h1>
+
+    <h2>Part 1: Filters!</h2>
+
+    <h3>1.1 - Convolutions</h3>
+            <p>Below are my implementations for convolution with 2 nested for-loops, then 4 nested for-loops. I compared these implementations to scipy.signal.convolve2d and found that scipy runtime > 4-loop runtime > 2-loop runtime. Because scipy's built-in function accounts for much more generality than my implementations, it makes sense that the runtime is longer. Furthermore, the 2-loop version takes advantage of vectorized numpy functions, which makes it slightly faster than the 4-loop version. In my implementations, boundaries are accounted for by padding the edges with zeros. The equivalent was done for the scipy version by using the "same" mode, where the final output is the same size as the original.</p>
+
+    <div class="row">
+      <figure>
+        <img src="conv/conv_2.png" alt="Convolution with 2 loops">
+        <figcaption>Convolution implementation with 2 for loops</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/conv_4.png" alt="Convolution with 4 loops">
+        <figcaption>Convolution implementation with 4 for loops</figcaption>
+      </figure>
+    </div>
+
+    <div class="row">
+      <figure>
+        <img src="conv/box_filter.png" alt="Box filter">
+        <figcaption>Implementation to apply 9x9 box filter to image</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/finite_diff.png" alt="Finite difference">
+        <figcaption>Implementation to convolve with finite difference operators</figcaption>
+      </figure>
+    </div>
+
+    <div class="row">
+      <figure>
+        <img src="original_images/pre_box_filter_image.jpg" alt="Before box filter">
+        <figcaption>Picture of myself before applying box filter</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/box_filter_image.jpg" alt="After box filter">
+        <figcaption>Picture of myself after applying box filter: smoothing effect</figcaption>
+      </figure>
+    </div>
+
+    <h3>1.2 - Finite Difference Operator</h3>
+    <div class="row">
+      <figure>
+        <img src="original_images/cameraman.png" alt="Cameraman">
+        <figcaption>Original cameraman image</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/dx_filter_cameraman_image.jpg" alt="dx filter">
+        <figcaption>Partial derivative in x of cameraman after convolving with finite differences operator D_x</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/dy_filter_cameraman_image.jpg" alt="dy filter">
+        <figcaption>Partial derivative in y of cameraman after convolving with finite differences operator D_y</figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The partial derivatives are a visual representation of the amount and location of horizontal and vertical changes there are in the image. For example, in the dx image, the tripod of the camera is clearly seen because there are many clear horizontal changes there. In the dy image, the camera itself is more clearly seen because of the horizontal lines (and thus vertical changes) on the camera.
+    </p>
+
+    <div class="row">
+      <figure>
+        <img src="conv/gradient_magnitude.jpg" alt="Gradient magnitude">
+        <figcaption>gradient magnitude</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/edge_image.jpg" alt="Edge image">
+        <figcaption>edge image with gradient magnitude threshold of 52</figcaption>
+      </figure>
+    </div>
+
+    <h3>1.3 - Derivative of Gaussian Filter</h3>
+    <div class="row">
+      <figure>
+        <img src="original_images/cameraman.png" alt="Cameraman">
+        <figcaption>original cameraman image</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/gaussian_blurred.jpg" alt="Gaussian blurred">
+        <figcaption>blurred cameraman image with Gaussian filter applied</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/edge_image.jpg" alt="Edge image">
+        <figcaption>original edge image</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/edge_image_after_gaussian.jpg" alt="Edge after Gaussian">
+        <figcaption>edge image after applying Gaussian filter</figcaption>
+      </figure>
+    </div>
+
+    <p>Clearly, the edge image after the Gaussian filter is much cleaner with less noise, especially in the ground area. By blurring the original image, noise is removed while attempting to retain edges, which is demonstrated in the result post-Gaussian.</p>
+
+    <div class="row">
+      <figure>
+        <img src="conv/dx_filter.png" alt="Dx filter">
+        <figcaption>convolution of D_x filter and Gaussian</figcaption>
+      </figure>
+      <figure>
+        <img src="conv/dy_filter.png" alt="Dy filter">
+        <figcaption>convolution of D_y filter and Gaussian</figcaption>
+      </figure>
+    </div>
+
+    <p>Convolving the Gaussian with the finite difference operators as we have done here and then applying the result to the image works the same as blurring the image using a Gaussian filter, then convolving with the finite difference operators.</p>
+
+    <hr>
+
+
+    <h2>Part 2: Frequencies!</h2>
+
+    <h3>2.1 - Image Sharpening</h3>
+    <p>To sharpen our images, we use an unsharp mask filter. We first apply a low pass filter to blur the image and thus isolate the low frequencies. Then, we can subtract this blurred image from the original image to get the high frequencies — this is what we will use to sharpen the image. The parameter alpha controls how much we should add the high frequencies. A higher parameter adds more high frequencies and thus sharpens the image more.</p>
+    <div class="row">
+      <figure><img src="original_images/taj.jpg"><figcaption>original image</figcaption></figure>
+      <figure><img src="sharpening/taj_blurred.jpg"><figcaption>blurred image</figcaption></figure>
+      <figure><img src="sharpening/taj_high_frequencies.jpg"><figcaption>high frequencies isolated</figcaption></figure>
+      <figure><img src="sharpening/taj_sharpened_1.0.jpg"><figcaption>sharpened image with an alpha parameter of 1.0</figcaption></figure>
+      <figure><img src="sharpening/taj_sharpened_2.0.jpg"><figcaption>sharpened image with an alpha parameter of 2.0</figcaption></figure>
+      <figure><img src="sharpening/taj_sharpened_4.0.jpg"><figcaption>sharpened image with an alpha parameter of 4.0</figcaption></figure>
+    </div>
+
+    <br>
+    <p>The following two examples started from the blurred images and attempted to sharpen them. While the sharpening is not perfect, the sharpening gets us remarkably close to the original images. There is some lack of detail from the original image simply because it was lost to begin with.</p>
+    
+    <div class="row" style="--num-images: 4; --gap-size: 20px;">
+      <figure><img src="original_images/christy.jpeg"><figcaption>original image of my roommate Christy and me</figcaption></figure>
+      <figure><img src="sharpening/christy_blurred.jpg"><figcaption>blurred image with gaussian filter</figcaption></figure>
+      <figure><img src="sharpening/christy_high_frequencies.jpg"><figcaption>high frequencies isolated</figcaption></figure>
+      <figure><img src="sharpening/christy_sharpened_3.5.jpg"><figcaption>sharpened image with parameter of 3.5</figcaption></figure>
+    </div>
+    <br>
+
+    <div class="row">
+      <figure><img src="original_images/corgi.jpeg"><figcaption>original image of the cutest corgi Jojo</figcaption></figure>
+      <figure><img src="sharpening/corgi_blurred.jpg"><figcaption>blurred image with gaussian filter</figcaption></figure>
+      <figure><img src="sharpening/corgi_high_frequencies.jpg"><figcaption>high frequencies isolated</figcaption></figure>
+      <figure><img src="sharpening/corgi_sharpened_3.5.jpg"><figcaption>sharpened image with parameter of 3.5</figcaption></figure>
+    </div>
+
+    <h3>2.2 - Hybrid Images</h3>
+    <p>To create the hybrid image effect, one image is put through a low-pass filter to isolate its low frequencies, while the other is put through a high-pass filter to isolate the high frequencies. This way, when yo ulook closely at the image, you see the high frequencies, but far away, you see the low frequencies. Here is one example on Derek and Nutmeg!</p>
+    <div class="row">
+      <figure><img src="original_images/DerekPicture.jpg"><figcaption>hi derek!</figcaption></figure>
+      <figure><img src="original_images/nutmeg.jpg"><figcaption>hi nutmeg!</figcaption></figure>
+    </div>
+
+    <div class="row">
+      <figure><img src="hybrids/low_pass_hybrid.jpg"><figcaption>a low pass filter applied on the image of Derek</figcaption></figure>
+      <div class="symbol">+</div>
+      <figure><img src="hybrids/high_pass_hybrid.jpg"><figcaption>a high pass filter applied on the image of Nutmeg</figcaption></figure>
+      <div class="symbol">=</div>
+      <figure><img src="hybrids/hybrid_image.jpg"><figcaption>hybrid image of Derek and Nutmeg!</figcaption></figure>
+    </div>
+
+    <br>
+    <p>Here is another example combining my friend Alex and me!</p>
+    
+    <div class="row">
+      <figure><img src="original_images/alex.jpeg"><figcaption>hi alex!</figcaption></figure>
+      <figure><img src="original_images/pre_box_filter_image.jpg"><figcaption>hi erica!</figcaption></figure>
+    </div>
+
+    <div class="row">
+      <figure><img src="hybrids/alex_low_pass_hybrid.jpg"><figcaption>a low pass filter on Alex</figcaption></figure>
+      <div class="symbol">+</div>
+      <figure><img src="hybrids/alex_high_pass_hybrid.jpg"><figcaption>a high pass filter on me </figcaption></figure>
+      <div class="symbol">=</div>
+      <figure><img src="hybrids/alex_hybrid_image.jpg"><figcaption>slightly unsettling hybrid image of Erica and Alex!</figcaption></figure>
+    </div>
+
+    <br><br>
+    <p>I also wanted to see how much my sister and mom would look alike. I sent the hybrid image to the family group chat and my mom responded, “OMG 🫢”. I love this result because the combination of my sister and mom somehow looks quite a bit like me. The Fourier analysis of these images is below as well.</p>
+    
+    <div class="row">
+      <figure><img src="original_images/mom.jpeg"><figcaption>a picture of my mom</figcaption></figure>
+      <figure><img src="hybrids/fam_low_pass_hybrid.jpg"><figcaption>low pass filter on mom (kernel size = 15, sigma = 3)</figcaption></figure>
+      <div class="symbol">+</div>
+      <figure><img src="original_images/sister.jpeg"><figcaption>a picture of my sister</figcaption></figure>
+      <figure><img src="hybrids/fam_high_pass_hybrid.jpg"><figcaption>high pass filter on sister (kernel size = 20, sigma = 3)</figcaption></figure>
+      <div class="symbol">=</div>
+      <figure><img src="hybrids/fam_hybrid_image.jpg"><figcaption>mom sister hybrid!</figcaption></figure>
+    </div>
+
+    <div class="row">
+      <figure><img src="hybrids/mom_fourier.jpg"></figure>
+      <figure><img src="hybrids/fam_low_pass_fourier.jpg"></figure>
+      <div class="symbol">+</div>
+      <figure><img src="hybrids/sister_fourier.jpg"></figure>
+      <figure><img src="hybrids/fam_high_pass_fourier.jpg"></figure>
+      <div class="symbol">=</div>
+      <figure><img src="hybrids/fam_hybrid_fourier.jpg"></figure>
+    </div>
+
+    <p>We can see that the low pass centered much of the activity in the fourier transform to the center (low frequencies), while the high pass filter spread out the activity.</p>
+
+    <h3>2.3 - Gaussian and Laplacian Stacks</h3>
+    <p>To prepare for multi-resolution blending, we show the Gaussian and Laplacian stacks on an apple and orange. In the Gaussian stack, the original image is repeatedly blurred (had a Gaussian filter applied). The Laplacian is calculated by taking the difference between successive Gaussian levels; in my visualization, the brightness is also amplified for visualization purposes.</p>
+    <div class="row">
+      <figure><img src="blends/apple_gaussian_stack.jpg"><figcaption>Gaussian stack for apple</figcaption></figure>
+    </div>
+
+    <div class="row">
+      <figure><img src="blends/apple_laplacian_stack.jpg"><figcaption>Laplacian stack for apple (last image is the last in the Gaussian stack)</figcaption></figure>
+    </div>
+
+    <div class="row">
+      <figure><img src="blends/orange_gaussian_stack.jpg"><figcaption>Gaussian stack for orange (last image is the last in the Gaussian stack)</figcaption></figure>
+    </div>
+
+    <div class="row">
+      <figure><img src="blends/orange_laplacian_stack.jpg"><figcaption>Laplacian stack for orange (last image is the last in the Gaussian stack)</figcaption></figure>
+    </div>
+
+    <h3>2.4 - Multiresolution Blending</h3>
+    <p>We use Gaussian and Laplacian stacks of two images and a Gaussian stack of a mask to blend smoothly across the vertical seam. Here’s the oraple!</p>
+
+    <div class="row">
+        <figure>
+        <img src="blends/oraple_mask1_visualization.jpg" alt="Apple Laplacian with mask">
+        <figcaption>Laplacian stack for apple with mask applied</figcaption>
+        </figure>
+        <figure>
+        <img src="blends/oraple_mask2_visualization.jpg" alt="Orange Laplacian with mask">
+        <figcaption>Laplacian stack for orange with mask applied</figcaption>
+        </figure>
+    </div>
+
+    <div class="row">
+    <figure>
+        <img src="blends/oraple_blended_laplacian_visualize.jpg" alt="Blended Laplacian stack">
+        <figcaption>Combined Laplacian stack</figcaption>
+    </figure>
+    </div>
+
+    <div class="row">
+        <figure>
+        <img src="original_images/apple.jpeg" alt="Original apple">
+        <figcaption>Original apple image</figcaption>
+        </figure>
+        <figure>
+        <img src="original_images/orange.jpeg" alt="Original orange">
+        <figcaption>Original orange image</figcaption>
+        </figure>
+    <figure>
+        <img src="blends/oraple_blended_image.jpg" alt="Final oraple">
+        <figcaption>Oraple!</figcaption>
+    </figure>
+  </div>
+
+  <br><br>
+  <h4>I also decided to see what a dinosaur with a unicorn horn would look like!</h4>
+
+  <div class="row">
+        <figure>
+        <img src="blends/dinocorn_mask1_visualization.jpg" alt="Unicorn Laplacian with mask">
+        <figcaption>Laplacian stack for unicorn with mask applied</figcaption>
+        </figure>
+        <figure>
+        <img src="blends/dinocorn_mask2_visualization.jpg" alt="Dino Laplacian with mask">
+        <figcaption>Laplacian stack for dino with mask applied</figcaption>
+        </figure>
+    </div>
+
+    <div class="row">
+    <figure>
+        <img src="blends/dinocorn_blended_laplacian_visualize.jpg" alt="Blended Laplacian stack">
+        <figcaption>Combined Laplacian stack</figcaption>
+    </figure>
+    </div>
+
+    <div class="row">
+        <figure>
+        <img src="original_images/unicorn.jpeg" alt="Original unicorn">
+        <figcaption>Original unicorn image</figcaption>
+        </figure>
+        <figure>
+        <img src="original_images/dino.jpeg" alt="Original dino">
+        <figcaption>Original dino image</figcaption>
+        </figure>
+    <figure>
+        <img src="blends/dinocorn_blended_image.jpg" alt="Final dinocorn">
+        <figcaption>Dinocorn!</figcaption>
+    </figure>
+  </div>
+
+  <br><br>
+  <p>This past winter, my housemates and I took a trip to Hawaii, where I went parasailing for the first time. After a long day doing activities, we decided to load up on carbs to re-fuel, so we got pizza. What would it look like if we were parasailing with the pizza we had? For this, I used an elliptical mask instead of a straight-line one.</p>
+  <div class="row">
+        <figure>
+        <img src="blends/pizzasail_mask1_visualization.jpg" alt="Pizza Laplacian with mask">
+        <figcaption>Laplacian stack for pizza with mask applied</figcaption>
+        </figure>
+        <figure>
+        <img src="blends/pizzasail_mask2_visualization.jpg" alt="Parasail Laplacian with mask">
+        <figcaption>Laplacian stack for parasail with mask applied</figcaption>
+        </figure>
+    </div>
+
+    <div class="row">
+    <figure>
+        <img src="blends/pizzasail_blended_laplacian_visualize.jpg" alt="Blended Laplacian stack">
+        <figcaption>Combined Laplacian stack</figcaption>
+    </figure>
+    </div>
+
+    <div class="row">
+        <figure>
+        <img src="original_images/parasail.jpeg" alt="Original parasail">
+        <figcaption>Original parasail image</figcaption>
+        </figure>
+        <figure>
+        <img src="original_images/pizza.jpeg" alt="Original pizza">
+        <figcaption>Original pizza image</figcaption>
+        </figure>
+    <figure>
+        <img src="blends/pizzasail_blended_image.jpg" alt="Final pizzasail">
+        <figcaption>Pizzasail!</figcaption>
+    </figure>
+  </div>
+
+
+</body>
+</html>
