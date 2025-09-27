@@ -125,6 +125,8 @@
       </figure>
     </div>
 
+    <p>I then implement a 9x9 box filter, which when convolved with an image, replaces every pixel with the average of its surrounding 9x9 square. The resulting effect is a blurred image that has its sharp edges smoothed.</p>
+
     <div class="row">
       <figure>
         <img src="conv/box_filter.png" alt="Box filter">
@@ -164,7 +166,7 @@
     </div>
 
     <p>
-      The partial derivatives are a visual representation of the amount and location of horizontal and vertical changes there are in the image. For example, in the dx image, the tripod of the camera is clearly seen because there are many clear horizontal changes there. In the dy image, the camera itself is more clearly seen because of the horizontal lines (and thus vertical changes) on the camera.
+      The partial derivatives are a visual representation of the amount and location of horizontal and vertical changes there are in the image. For example, in the dx image, the tripod of the camera is clearly seen because there are many clear horizontal changes there. In the dy image, the camera itself is more clearly seen because of the horizontal lines (and thus vertical changes) on the camera. The following left image is the gradient magnitude that is calculated from the partial derivatives above. What results is something that resembles an edge image, but we binarize this edge image in the bottom right image, allowing us to see crisp white edges.
     </p>
 
     <div class="row">
@@ -198,7 +200,7 @@
       </figure>
     </div>
 
-    <p>Clearly, the edge image after the Gaussian filter is much cleaner with less noise, especially in the ground area. By blurring the original image, noise is removed while attempting to retain edges, which is demonstrated in the result post-Gaussian.</p>
+    <p>Here, we create a blurred version of the image by convolving it with the Gaussian filter. Then, we repeat the same process as in 1.2, and voila! Some of the noise in parts of the image like the grass has disappeared. The edge image after the Gaussian filter is much cleaner with less noise, especially in the ground area. By blurring the original image, noise is removed while attempting to retain edges, which is demonstrated in the result post-Gaussian.</p>
 
     <div class="row">
       <figure>
@@ -211,7 +213,7 @@
       </figure>
     </div>
 
-    <p>Convolving the Gaussian with the finite difference operators as we have done here and then applying the result to the image works the same as blurring the image using a Gaussian filter, then convolving with the finite difference operators.</p>
+    <p>These images are the result of convolving the original D_x filter and D_y filter with a Gaussian, resulting in derivative of gaussian (DoG) filters. Convolving the Gaussian with the finite difference operators as we have done here and then applying the result to the image works the same as blurring the image using a Gaussian filter, then convolving with the finite difference operators! Hence, the order of applying these two steps does not affect the final result.</p>
 
     <hr>
 
@@ -322,7 +324,7 @@
     </div>
 
     <h3>2.4 - Multiresolution Blending</h3>
-    <p>We use Gaussian and Laplacian stacks of two images and a Gaussian stack of a mask to blend smoothly across the vertical seam. Here’s the oraple!</p>
+    <p>We use Gaussian and Laplacian stacks of two images and a Gaussian stack of a mask to blend smoothly across the vertical seam. This is done by creating a binary mask with all black on one side and white on the other side. I also faded the transition in the mask to avoid an abrupt seam, which helps with smoothing the image. The mask is then put through its own Gaussian stack before being applied to the images and finally combined into a blended Laplacian stack. Here’s the oraple!</p>
 
     <div class="row">
         <figure>
