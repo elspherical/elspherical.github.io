@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 3</title>
+    <style>
+        body {
+            font-family: Palatino, serif;
+            width: 95%;
+            margin: auto;
+        }
+
+        .button {
+            margin: 10px;
+            padding: 10px;
+            font-family: Palatino, serif;
+            transition-duration: 0.4s;
+        }
+
+        .button:hover {
+            background-color: black;
+            color: white;
+        }
+
+        h1, h2 {
+            text-align: center;
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: fadeSlideIn 0.7s ease-out forwards;
+        }
+
+        h2 {
+            font-size: 1.5em;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .box {
+            border: 1px solid black;
+            padding: 20px;
+            line-height: 23px;
+            margin: 10px auto;
+            text-align: center;
+            width: 80%;
+            box-sizing: border-box;
+        }
+
+        .image-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .image-row img {
+            max-width: 45%;
+            margin: 10px;
+            height: auto;
+        }
+
+        .caption {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .image-caption-row {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .image-caption {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .image-caption img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .image-caption .caption {
+            margin-top: 5px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .correspondence-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .correspondence-image {
+            flex: 0 0 75%;
+            max-width: 75%;
+            padding: 10px;
+        }
+
+        .correspondence-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        .correspondence-text {
+            flex: 0 0 20%;
+            max-width: 20%;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            text-align: left;
+        }
+
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html">
+        <button class="button">Return to home page.</button>
+    </a>
+
+    <h1>Project 3: [Auto]Stitching Photo Mosaics 🪡 🖼️ 🎞️ </h1>
+
+    <h2 class="fade-in">Part 1: Shoot the Pictures</h2>
+    <div class="box fade-in">
+        In this part, I took photographs in different locations with a projective transform between them. In other words, I did my best to keep the center of projection stable and rotate my camera.
+    </div>
+    <div class="image-row fade-in">
+        <img src="data/davies_img1.jpeg" alt="Davies Image 1">
+        <img src="data/davies_img2.jpeg" alt="Davies Image 2">
+    </div>
+    <div class="caption">Starting far away: Davies Hall in San Francisco at night after a symphony concert!</div>
+    <br>
+    <div class="image-row fade-in">
+        <img src="data/road_img1.jpg" alt="Road Image 1">
+        <img src="data/road_img2.jpg" alt="Road Image 2">
+    </div>
+    <div class="caption">Almost home! Here are some scenes of the 7-11 on Telegraph Ave late at night</div>
+    <br>
+    <div class="image-row fade-in">
+        <img src="data/room_img1.jpg" alt="Room Image 1">
+        <img src="data/room_img2.jpg" alt="Room Image 2">
+    </div>
+    <div class="caption">Now, we’re home: my corner of sentimental pictures, memories, and trinkets</div>
+    <br><br>
+    <h2 class="fade-in">Part 2: Recover Homographies</h2>
+    <div class="box fade-in">
+        In Part 2, I implemented the <b>computeH(im1_pts, im2_pts)</b> function. im1_pts and im2_pts represent the n point correspondences and their (x, y) coordinate locations, and the goal of the function is to recover the 3x3 homography matrix H.
+        <br><br>
+        To do this, I set up a linear system of n equations to solve for the 8 unknown entries of the homography matrix (not including the guaranteed 1 in the bottom-right corner). In my mosaic calculations later in the project, I computed 6 point correspondences to ensure an overdetermined system, making the calculation more stable.
+    </div>
+
+    <div class="correspondence-row fade-in">
+        <div class="correspondence-image">
+            <img src="correspondences/davies_selected_points.png" alt="Davies Selected Points">
+        </div>
+        <div class="correspondence-text">
+            <p>To select these point correspondences (marked in red on the diagram), I tried to isolate corners and features such as the corner of a window, the corner of a poster, the base of a tree, and a divot of the statue.</p>
+        </div>
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="correspondences/davies_coords.png" alt="Davies Coordinates">
+            <div class="caption">selected coordinates</div>
+        </div>
+        <div class="image-caption">
+            <img src="correspondences/davies_equation.png" alt="Davies Equation">
+            <div class="caption">matrix equation</div>
+        </div>
+        <div class="image-caption">
+            <img src="correspondences/davies_homography.png" alt="Davies Homography">
+            <div class="caption">calculated homography</div>
+        </div>
+    </div>
+    <hr>
+    <div class="correspondence-row fade-in">
+        <div class="correspondence-image">
+            <img src="correspondences/road_selected_points.png" alt="Road Selected Points">
+        </div>
+        <div class="correspondence-text">
+            <p>For the road and 7-11 image, I attempted to select features like the corner of the sign, a car tire, the top of the parking meter, etc.</p>
+        </div>
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="correspondences/road_coords.png" alt="Road Coordinates">
+            <div class="caption">selected coordinates</div>
+        </div>
+        <div class="image-caption">
+            <img src="correspondences/road_equation.png" alt="Road Equation">
+            <div class="caption">matrix equation</div>
+        </div>
+        <div class="image-caption">
+            <img src="correspondences/road_homography.png" alt="Road Homography">
+            <div class="caption">calculated homography</div>
+        </div>
+    </div>
+    <hr>
+    <div class="correspondence-row fade-in">
+        <div class="correspondence-image">
+            <img src="correspondences/room_selected_points.png" alt="Room Selected Points">
+        </div>
+        <div class="correspondence-text">
+            <p>The point correspondences I chose for this image were corners of photos, corners between the pillow and shelf, and specific decorations.</p>
+        </div>
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="correspondences/room_coords.png" alt="Road Coordinates">
+            <div class="caption">selected coordinates</div>
+        </div>
+        <div class="image-caption">
+            <img src="correspondences/room_equation.png" alt="Road Equation">
+            <div class="caption">matrix equation</div>
+        </div>
+        <div class="image-caption">
+            <img src="correspondences/room_homography.png" alt="Road Homography">
+            <div class="caption">calculated homography</div>
+        </div>
+    </div>
+
+    <hr>
+    <h2 class="fade-in">Part 3: Warp the Images</h2>
+    <div class="box fade-in" style="width: 100%; border: 1px solid black; padding: 20px; margin: 20px 0; text-align: center;">
+        In Part 3, I implemented methods to warp images according to the homography matrix found in Part 2. Subsequently, I was able to perform image rectification on images that had a perspective transform performed on them.
+        Two different interpolation methods are used: <b>nearest-neighbor interpolation</b> and <b>bilinear interpolation</b>.
+        <br><br>
+        As seen in the following examples, <b>bilinear interpolation results in smoother results</b>, while nearest neighbor interpolation 
+        results in somewhat more “pixelated” or choppy images. However, it is important to note that <b>nearest neighbor 
+        interpolation is generally more efficient</b> than bilinear interpolation because bilinear interpolation requires around 
+        4× the number of calculations as nearest neighbor; in bilinear interpolation, all 4 surrounding pixels need to be 
+        considered instead of just rounding the pixel we are working with.
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="interpolation/new_york.jpeg" alt="Original NYC Image">
+            <div class="caption">original image, from Levain Bakery in Noho, New York</div>
+        </div>
+        <div class="image-caption">
+            <img src="interpolation/nyc_nn_warped.png" alt="NYC Nearest Neighbor">
+            <div class="caption">warped image using nearest neighbor interpolation</div>
+        </div>
+        <div class="image-caption">
+            <img src="interpolation/nyc_bilinear_warped.png" alt="NYC Bilinear">
+            <div class="caption">warped image using bilinear interpolation -- much smoother than NN interpolation</div>
+        </div>
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="interpolation/photobooth_long.jpeg" alt="Original Photobooth Image">
+            <div class="caption">original image, photobooth in Cupertino with my friends :)</div>
+        </div>
+        <div class="image-caption">
+            <img src="interpolation/photobooth_nn_warped.png" alt="Photobooth Nearest Neighbor">
+            <div class="caption">warped image using nearest neighbor interpolation</div>
+        </div>
+        <div class="image-caption">
+            <img src="interpolation/photobooth_bilinear_warped.png" alt="Photobooth Bilinear">
+            <div class="caption">warped image using bilinear interpolation -- smoother!</div>
+        </div>
+    </div>
+
+        <h2 class="fade-in">Part 4: Blend the Images into a Mosaic</h2>
+    <div class="box fade-in">
+        In this part, I combine the previous parts to create a mosaic of the images stitched together. I use the warping mechanism from before to warp the first image and stitch it with the original second image (left unwarped).
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="data/davies_img1.jpeg" alt="Davies Image 1">
+            <div class="caption">original image 1 of Davies</div>
+        </div>
+        <div class="image-caption">
+            <img src="data/davies_img2.jpeg" alt="Davies Image 2">
+            <div class="caption">original image 2 of Davies</div>
+        </div>
+        <div class="image-caption">
+            <img src="mosaics/mosaic_davies_naive.png" alt="Davies Mosaic Naive">
+            <div class="caption">combined Davies mosaic!</div>
+        </div>
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="data/road_img1.jpg" alt="Road Image 1">
+            <div class="caption">original image 1 of the 7-11 and road</div>
+        </div>
+        <div class="image-caption">
+            <img src="data/road_img2.jpg" alt="Road Image 2">
+            <div class="caption">original image 2 of the 7-11 and road</div>
+        </div>
+        <div class="image-caption">
+            <img src="mosaics/mosaic_road_naive.png" alt="Road Mosaic Naive">
+            <div class="caption">combined 7-11 mosaic!</div>
+        </div>
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="data/room_img1.jpg" alt="Room Image 1">
+            <div class="caption">original image 1 of my room</div>
+        </div>
+        <div class="image-caption">
+            <img src="data/room_img2.jpg" alt="Room Image 2">
+            <div class="caption">original image 2 of my room</div>
+        </div>
+        <div class="image-caption">
+            <img src="mosaics/mosaic_room_naive.png" alt="Room Mosaic Naive">
+            <div class="caption">combined room mosaic!</div>
+        </div>
+    </div>
+
+    <br><br>
+    <h2 class="fade-in">Removing Edge Artifacts</h2>
+    <div class="box fade-in">
+        To reduce the sharpness of edges caused by just overwriting one picture with the other, I use weighted averaging to blend the images. To implement this, I introduced an alpha channel to the pixels to control the weight (essentially the transparency) in the average. The alpha channel is set deterministically; it is 1 at the center of the image and falls off linearly until hitting 0 at the edges.
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="mosaics/mosaic_davies_naive.png" alt="Davies Naive">
+            <div class="caption">naive stitching, with overwriting</div>
+        </div>
+        <div class="image-caption">
+            <img src="mosaics/mosaic_davies_blend.png" alt="Davies Blend">
+            <div class="caption">stitching with weighted average blending</div>
+        </div>
+    </div>
+
+    <div class="box fade-in" style="border: none; text-align: center; width: 80%;">
+        While changes may look subtle, we can clearly see the abrupt seam in the middle of the windows at the top of the building. Blending smooths this seam and makes the image look more cohesive. However, this does cause some blurring of the middle of the image. This can be caused by the imprecise selection of point correspondences and imperfect center of projection, which we do not need to worry about with naive stitching.
+    </div>
+    <br>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="mosaics/mosaic_road_naive.png" alt="Road Naive">
+            <div class="caption">naive stitching, with overwriting</div>
+        </div>
+        <div class="image-caption">
+            <img src="mosaics/mosaic_road_blend.png" alt="Road Blend">
+            <div class="caption">stitching with weighted average blending</div>
+        </div>
+    </div>
+
+    <div class="box fade-in" style="border: none; text-align: center; width: 80%;">
+        To see how blending improved the mosaic, focus on the seam in the sky to the right of the 7-11 sign. The blended version removes the abrupt edge and attempts to smooth out the changes in sky color.
+    </div>
+    <br>
+    
+    <div class="image-caption-row fade-in">
+        <div class="image-caption">
+            <img src="mosaics/mosaic_room_naive.png" alt="Room Naive">
+            <div class="caption">naive stitching, with overwriting</div>
+        </div>
+        <div class="image-caption">
+            <img src="mosaics/mosaic_room_blend.png" alt="Room Blend">
+            <div class="caption">stitching with weighted average blending</div>
+        </div>
+    </div>
+
+    <div class="box fade-in" style="border: none; text-align: center; width: 80%;">
+        The seam that blending improved here can be seen in the middle of the poster with flowers at the top right of the image. After blending, this seam is barely visible.
+    </div>
+
+
+    <script>
+        const faders = document.querySelectorAll('.fade-in');
+        const options = {
+            threshold: 0.2
+        };
+        const observer = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, options);
+
+        faders.forEach(fader => {
+            observer.observe(fader);
+        });
+    </script>
+</body>
+</html>
