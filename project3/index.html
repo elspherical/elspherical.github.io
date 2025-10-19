@@ -56,6 +56,24 @@
             box-sizing: border-box;
         }
 
+        .feature-row {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 100vw; 
+        }
+
+        .feature-row .image-caption-corners img {
+            height: 100%;    
+            width: auto;    
+            max-height: 60vh;
+            max-width: 100%;
+            display: block;
+        }
+
         .image-row {
             display: flex;
             flex-wrap: wrap;
@@ -93,6 +111,11 @@
 
         .image-caption img {
             max-width: 100%;
+            height: auto;
+        }
+
+        .image-caption-corners img {
+            width: 30vw;
             height: auto;
         }
 
@@ -388,6 +411,266 @@
 
     <div class="box fade-in" style="border: none; text-align: center; width: 80%;">
         The seam that blending improved here can be seen in the middle of the poster with flowers at the top right of the image. After blending, this seam is barely visible.
+    </div>
+
+    
+    <!--Part B--> 
+    
+    <hr>
+
+    <h1 class="fade-in">Part B: Autostitching with Feature Matching</h1>
+
+    <h2 class="fade-in">
+        B.1: Harris Corner Detection
+    </h2>
+
+    <div class="box fade-in">
+        For the first part of this half of the project, I used <b>Harris corner detection</b> to identify corners.
+        This technique finds corners by isolating points where there are strong changes in both directions. 
+        However, we notice in the first corner results that many of the points are strongly clustered together, 
+        preventing the corner detection from being well-distributed and unrepetitive. 
+        Thus, I then implement <b>Adaptive Non-Maximal Suppression (ANMS)</b>, which ensures that the detected corners 
+        are spaced out well enough. This technique uses the corner strengths derived from the Harris response to find 
+        a “suppression radius” for each point that represents the radius from the point at which a considerably stronger 
+        corner can be found. Then, the highest suppression radii are taken to be the final corners, enabling both strong 
+        and well-distributed corners to be detected.
+    </div>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/bay_bridge.jpeg" alt="Bay Bridge Original">
+            <div class="caption">original image of Bay Bridge</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/bridge_corners.png" alt="Bridge Harris Corners">
+            <div class="caption">Harris corner detection on bridge image — not well-distributed</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/bridge_anms.png" alt="Bridge ANMS">
+            <div class="caption">ANMS applied — much more well-distributed but still maintains strong corners</div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/kayak_img1.jpeg" alt="Kayak Original">
+            <div class="caption">original image of kayaks</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/kayak_corners.png" alt="Kayak Harris Corners">
+            <div class="caption">Harris corner detection on kayak image</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/kayak_anms.png" alt="Kayak ANMS">
+            <div class="caption">ANMS applied</div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/gudetama.jpeg" alt="Gudetama Original">
+            <div class="caption">original image of Gudetama (unbroken!)</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/gudetama_corners.png" alt="Gudetama Harris Corners">
+            <div class="caption">Harris corner detection on Gudetama image</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/gudetama_anms.png" alt="Gudetama ANMS">
+            <div class="caption">ANMS applied</div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="image-caption-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/gudetama_broken.jpeg" alt="Gudetama Broken Original">
+            <div class="caption">original image of Gudetama (broken…)</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/gudetama_broken_corners.png" alt="Gudetama Broken Corners">
+            <div class="caption">Harris corner detection on Gudetama image</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/corners/gudetama_broken_anms.png" alt="Gudetama Broken ANMS">
+            <div class="caption">ANMS applied</div>
+        </div>
+    </div>
+
+    <!--B.2-->
+    <h2 class="fade-in"> B.2: Feature Descriptor Extraction </h2>
+
+    <div class="box fade-in">
+        To extract features we later match images on, we use the corners we detected in the previous part and construct a descriptor for each corner. 
+        We do this by sampling a 40×40 window around the corner and then resizing it down to an 8×8 descriptor. 
+        This allows us to connect matching features between images without being so granular that corresponding points do not get detected as matching. 
+        We also normalize the patches to account for image-independent parameters such as lighting.
+    </div>
+    <br>
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/bay_bridge.jpeg" alt="Bay Bridge Original">
+            <br>
+            <div class="caption">original image of Bay Bridge</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/features/bridge_features.png" alt="Bridge Features">
+            <div class="caption">features selected for the Bay Bridge, such as details and sharp corners on the bridge</div>
+        </div>
+    </div>
+
+    <br><hr><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/kids.jpeg" alt="Kids Original">
+            <br>
+            <div class="caption">original image of my sister and me being cool</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/features/kids_features.png" alt="Kids Features">
+            <div class="caption">features selected for human features such as an arm, hairline, etc.</div>
+        </div>
+    </div>
+
+    <br><hr><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/originals/kayak_img1.jpeg" alt="Kayak Original">
+            <br>
+            <div class="caption">original image of kayaks</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/features/kayak_features.png" alt="Kayak Features">
+            <div class="caption">features selected for the kayak, such as strings on the kayak and tall poles</div>
+        </div>
+    </div>
+    <h2 class="fade-in">B.3: Feature Matching</h2>
+
+    <div class="box fade-in">
+        Next, we want to automatically find point correspondences between images by finding feature matches. To do this, we compare pairs of the features we extracted in the last part, finding the squared distances between the pair. We then sort these distances, finding the best matches. However, we threshold good vs. bad matches using <strong>Lowe’s ratio</strong>, which finds the ratio of the error for the best match (1-nearest neighbor) to the error for the second best match (2-NN).
+        <br><br>
+        In the following examples, we see quite good results for feature matching, where each differently colored line is matching 1 corresponding pair of features. However, we see that there are a few outliers, which we will rectify in the next part.
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/matching/room_matching.png" alt="Kayak Matching">
+            <div class="caption">feature matchings between these two camera angles of the favorite corner of my room</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/matching/road_matching.png" alt="Road Matching">
+            <div class="caption">feature matchings between two angles of the 7-11 and road</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/matching/kayak_matching.png" alt="Room Matching">
+            <div class="caption">feature matchings between two angles of the kayaks</div>
+        </div>
+    </div>
+
+
+    <h2 class="fade-in">B.4: RANSAC and Mosaics</h2>
+
+    <div class="box fade-in">
+        Notice that we have a few incorrect matches (outliers) in our previous results. We can vastly improve this by using RANSAC. This technique performs several iterations of the following loop. First, 4 feature pairs are selected at random, from which the homography transforming the coordinates is calculated. Then, we keep a running maximum for the number of inliers (the mapped points that are close enough to the actual matching points). Keeping the largest set of inliers filters out incorrect matches, which would have caused the number of inliers to be much lower than if they were correct. At the end, the least-squares estimate of the homography matrix H is re-computed.
+
+        In the following examples, it is very evident that RANSAC is effective at eliminating outliers. An easy way to see this is that the lines connecting corresponding points are all roughly parallel, indicating a consistent homography transformation amongst these points (largest set of inliers).
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/ransac/room_ransac.png" alt="Room RANSAC">
+            <div class="caption">feature matchings for my room after RANSAC — so much better!</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/ransac/road_ransac.png" alt="Road RANSAC">
+            <div class="caption">feature matchings for the road after RANSAC</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="part2/ransac/kayak_ransac.png" alt="Kayak RANSAC">
+            <div class="caption">feature matchings for the kayaks after RANSAC</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="box fade-in">
+        Now that we have accurate point correspondences, we can try to generate mosaics again. By using these automatic correspondences, the mosaics are much more seamless, without the blur and misalignments that were evident in the manual correspondences.
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="mosaics/mosaic_room_blend.png" alt="Room Mosaic Manual">
+            <br>
+            <div class="caption">mosaic of the room with manual correspondences; blurring can be seen in the photos and decorations</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/mosaics/room_mosaic.png" alt="Room Mosaic Automatic">
+            <br>
+            <div class="caption">mosaic of the room with automatic correspondences; much more seamless!</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="mosaics/mosaic_road_blend.png" alt="Road Mosaic Manual">
+            <br>
+            <div class="caption">mosaic of the road with manual correspondences; blurring can be seen in the trees and sidewalk</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/mosaics/road_mosaic.png" alt="Road Mosaic Automatic">
+            <br>
+            <div class="caption">mosaic of the road with automatic correspondences; again, more seamless but a little less obvious in this picture because of the dark sky</div>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="feature-row fade-in">
+        <div class="image-caption-corners">
+            <img src="mosaics/mosaic_kayak_blend.png" alt="Kayak Mosaic Manual">
+            <br>
+            <div class="caption">mosaic of the kayaks with manual correspondences; blurring can be seen in the trees and sidewalk</div>
+        </div>
+        <div class="image-caption-corners">
+            <img src="part2/mosaics/kayak_mosaic.png" alt="Kayak Mosaic Automatic">
+            <br>
+            <div class="caption">mosaic of the kayaks with automatic correspondences; very seamless stitching!</div>
+        </div>
     </div>
 
 
