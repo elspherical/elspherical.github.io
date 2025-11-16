@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project 4</title>
+    <style>
+        body {
+            font-family: Palatino, serif;
+            width: 95%;
+            margin: auto;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px;
+            font-family: Palatino, serif;
+            transition-duration: 0.4s;
+        }
+        .button:hover {
+            background-color: black;
+            color: white;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: fadeSlideIn 0.7s ease-out forwards;
+        }
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .row img {
+            max-width: 100%
+        }
+        .caption {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .grid2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .grid2x2 img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html"><button class="button">Return to home page.</button></a>
+
+    <h1>Project 4: NeRF 🎥☁️🔫</h1>
+
+    <h2>Part 0: Calibrating the Camera</h2>
+    <div class="row">
+        <div>
+            <img src="frustum_1.png" />
+        </div>
+        <div>
+            <img src="frustum_2.png" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="caption">camera frustum visualizations of custom dataset</div>
+    </div>
+
+    <h2>Part 1: Fit a Neural Field to a 2D Image</h2>
+    <p style="text-align:center; font-size:16px;"><b>Model architecture report</b>: Number of layers = 4 linear, 3 ReLU, 1 sigmoid; Width = 256 layers (adjustments below); Learning Rate = 1e-2; Positional encoding frequency(L) = 10</p>
+
+    <div class="row">
+        <div>
+            <img src="fox_reconstructions/fox.jpg" style="max-width: 50%; display: block; margin: auto" />
+            <div class="caption">original image of a fox</div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="fox_reconstructions/fox_progression.png"/>
+            <div class="caption">training progression across 2000 iterations through 2D neural field for fox; we can see that </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <img src="fox_reconstructions/bowls.jpeg" style="max-width: 50%; display: block; margin: auto" />
+            <div class="caption">original image of ramen bowls</div>
+        </div>
+    </div>
+    <div class ="row">
+        <div>
+            <img src="fox_reconstructions/bowls_progression.png" />
+            <div class="caption">training progression across 1000 iterations for ramen bowls</div>
+        </div>
+    </div>
+
+    <div class="grid2x2">
+        <div>
+            <img src="fox_reconstructions/reconstructed_2_64.png" />
+            <div class="caption">reconstructed image for max frequency L=2, channel size 64</div>
+        </div>
+        <div>
+            <img src="fox_reconstructions/final_reconstruction_2_256.png" />
+            <div class="caption">reconstructed image for max frequency L=2, channel size 256</div>
+        </div>
+        <div>
+            <img src="fox_reconstructions/reconstruction_15_64.png" />
+            <div class="caption">reconstructed image for max frequency L=15, channel size 64</div>
+        </div>
+        <div>
+            
+            <img src="fox_reconstructions/final_reconstruction_15_256.png" />
+            <div class="caption">reconstructed image for max frequency L=15, channel size 256</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <img src="fox_reconstructions/final_psnr_15_256.png" style="max-width:60%; display:block; margin:auto;"  />
+            <div class="caption">PSNR curve for training the fox image on L = 15 and channel size = 256</div>
+        </div>
+    </div>
+
+    <h2>Part 2: Fit a Neural Radiance Field from Multi-view Images</h2>
+
+    <h3 style="text-align:center;">Implementation Details</h3>
+    <p style="text-align:center;"><b>2.1 - Camera to World</b>: By inverting the world-to-camera transformation matrix and applying the new transformation on the camera coordinates, we find the world coordinates. </p>
+    <p style="text-align:center;"><b>2.1 - Pixel to Camera</b>: I first add the homogeneous coordinate onto the (u, v) pixel before multiplying by s, the depth, and the inverse of the intrinsics matrix K to get the camera coordinates.</p>
+     <p style="text-align:center;"><b>2.1 - Pixel to Ray</b>: I use pixel_to_camera to convert the pixel to camera coordinates, and then use the c2w transformation to get the world coordinates of the point. Then, we use this information to find the r0 (origin vector) and rd (direction vector). </p>
+     <p style="text-align:center;"><b>2.2 - Sampling</b>: I sample rays from the image by randomly selecting coordinates on the image and then converting the corresponding pixels to rays. I then sample points from those rays by uniformly sampling along the ray and introducing a small perturbation to the points. </p>
+     <p style="text-align:center;"><b>2.3 - Dataloader</b>: The dataloader for this part returns the ray origins, ray directions, and sampled colors in the 3D space. To do this, I use the previously made pixel_to_ray and multiview_sample_rays (multiple-camera version of the naive ray sampling) to implement this. </p>
+     <p style="text-align:center;"><b>2.4 - NeRF</b>: In this part, I construct the architecture of the network. The 3D input is first put through sinusoidal positional encoding (default L=10) before being processed through 4 linear layers with default channel size of 256 and ReLU activations between them. Then, the input is injected to help with not forgetting the input. The output of this is then put through 4 more linear layers with ReLU's between them. Then, it is put through one more linear layer and ReLU to get the density for this point. On the other branch, the 3D ray direction is injected after one more linear layer and then goes through 2 more linear layers, 1 ReLU, and 1 sigmoid to output the RGB vector for this point. </p>
+     <p style="text-align:center;"><b>2.5 - Volume Rendering</b>: Here, I implement the volume rendering equation, which will take the density and RGB outputted by the model as inputs. This method outputs the discrete approximation of the final rendered color for each point and ray.</p>
+
+    <div class="row">
+        <div>
+            <img src="lego/ray_visualization.png" />
+            <div class="caption">visualization of the rays and samples for the cameras used</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <img src="lego/lego_progression.png" />
+            <div class="caption">training progression for LEGO images across 2k iterations</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <img src="lego/lego_psnr.png" />
+            <div class="caption">PSNR curve on validation set for LEGO dataset</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <img src="lego/lego_spherical.gif" style="width: 650px; display: block; margin: auto" />
+            <div class="caption">rendered spherical video of Lego!</div>
+        </div>
+    </div>
+
+    <h2>Part 2.6: Training with my Hello Kitty Data!</h2>
+
+    <div class="row">
+        <div>
+            <img src="kitty/kitty_view1.jpeg" />
+        </div>
+        <div>
+            <img src="kitty/kitty_view2.jpeg" />
+        </div>
+        <div>
+            <img src="kitty/kitty_view3.jpeg" />
+        </div>
+    </div>
+    <p style="text-align:center; font-size:14px;">I will be making a NeRF of this Hello Kitty LEGO figurine!</p>
+
+    <div class="row">
+        <div>
+            <img src="kitty/novel_view_kitty.gif" style="width: 1000px; display: block; margin: auto" />
+            <div class="caption">rendered Hello Kitty spherical view</div>
+        </div>
+    </div>
+
+    <p style="max-width:70%; margin:auto; font-size:15px; line-height:1.4;">
+        <b>Implementation details</b>: Because my item was roughly the same size as the lafufu doll, I found that using near = 0.02 and far = 0.5 again worked well during training. Furthermore, I resized my images to 258x214 because I was running into Out of Memory errors when training otherwise. I did not change any of the model architecture from the LEGO portion of the project because I found that it worked similarly well for my dataset. My dataset had 52 viable images, of which I used 90% for training and 10% for validation to make sure that no drastic issues occurred. For my test/novel view rendering, I used one of the training cameras and rotated it around the z-axis to generate the gif.
+        <br><br>
+        Note: Some of my undistorted images still had black borders remaining, which I believe is causing the black garbage in parts of the rendered video. However, a future step would have been trying to properly remove the borders.
+    </p>
+
+    <div class="row">
+        <img src="kitty/kitty_train_loss.png" />
+    </div>
+    <div class="caption">training loss over 10k iterations for Hello Kitty figurine</div>
+    <div class="row" >
+        <img src="kitty/kitty_renders.png" />
+    </div>
+    <div class="caption">intermediate renders of the Hello Kitty figurine during training</div>
+    <br><br>
+</body>
+</html>
