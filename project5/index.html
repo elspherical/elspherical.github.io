@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project 5</title>
+    <style>
+        body {
+            font-family: Palatino, serif;
+            width: 95%;
+            margin: auto;
+        }
+        .button {
+            margin: 10px;
+            padding: 10px;
+            font-family: Palatino, serif;
+            transition-duration: 0.4s;
+        }
+        .button:hover {
+            background-color: black;
+            color: white;
+        }
+        h1, h2, h3 { 
+            text-align: center; 
+            margin: 30px 0;
+            opacity: 0;
+            transform: translateY(-50px);
+            animation: fadeSlideIn 0.7s ease-out forwards;
+        }
+        @keyframes fadeSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .row > div, 
+        .row-full-width > div, 
+        .row-partb-50 > div, 
+        .row-partb-60 > div, 
+        .row-partb-3 > .partb-item-3, 
+        .inpainting-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .row p {
+            text-align: center;
+        }
+
+        .row > img {
+            display: block;
+            margin: 0 auto;
+        }
+        h4, h5 {
+            font-size: 1.5em; 
+            margin: 15px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            align-items: flex-start;
+        }
+        .row p {
+            max-width: 100%;
+            text-align: justify;
+            margin: 0 auto;
+        }
+        
+        .row img {
+            max-width: 100%;
+            height: auto; 
+            max-height: 250px; 
+            width: auto;
+            object-fit: contain; 
+        }
+
+        .row div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .row[style*="flex-direction: column"] img {
+            max-height: 200px;
+        }
+        
+        .inpainting-row {
+            display: flex;
+            justify-content: center; 
+            gap: 20px;
+            margin: 20px 0;
+            align-items: flex-start;
+        }
+        .inpainting-item {
+            display: flex;
+            width: 30%; 
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .inpainting-item img {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px; 
+        }
+        .inpainting-item .caption {
+            text-align: left; 
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .row-partb-50 {
+            display: flex;
+            justify-content: center; 
+            gap: 10px; 
+            margin: 20px auto; 
+        }
+        .row-partb-50 div {
+            width: 48%; 
+            max-width: 48%; 
+        }
+        .row-partb-50 img {
+            max-height: 350px; 
+        }
+        
+        .row-full-width div {
+             width: 100%;
+        }
+        .row-full-width img {
+             max-height: 350px;
+        }
+        
+        .row-partb-60 {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .row-partb-60 div {
+            width: 60%;
+            max-width: 60%;
+        }
+
+        .row[style*="flex-direction: column"] img {
+            max-height: none;      
+            width: auto;       
+            max-width: 100%;   
+        }
+
+        .row[style*="flex-direction: column"] img[src*="1.3"] {
+            max-height: none; 
+            width: auto;
+            max-width: 100%;  
+        }
+
+
+        .row-partb-3 {
+            display: flex;
+            justify-content: center; 
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .partb-item-3 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 30%; 
+        }
+        .partb-item-3 img {
+             max-height: 200px; 
+        }
+
+        .caption {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .grid2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .grid2x2 img {
+            width: 100%;
+        }
+
+        .row[style*="flex-direction: column"] img[src*="1.3"] {
+            width: 100%;   
+            height: auto; 
+            max-height: none; 
+        }
+
+        .row-partb-50 > div > img[src*="1.2.1_epoch"] {
+            width: 100%;
+            height: auto; 
+            max-height: none;
+        }
+
+        .row-partb-50 > div > img[src*="1.2.3_epoch"] {
+            width: 100%;
+            height: auto;
+            max-height: none;
+        }
+
+        .row img[src*="1.4"] {
+            width: 100%;
+            height: auto;   
+            max-height: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html"><button class="button">Return to home page.</button></a>
+
+    <h1>Project 5: Diffusion Models! ⛰️🥬</h1>
+
+    <h2>Part A: The Power of Diffusion Models</h2>
+
+    <h3>Part 0: Setup</h3>
+    <div class="row">
+        <p>First, I played around with the DeepFloyd diffusion model to generate the embeddings and images for some of my own prompts. The following images and their corresponding text prompts are displayed below.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/0_30.png" alt="Image generated with 30 inference steps">
+            <div class="caption">Generate images using num_inference_steps=30</div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/0_100.png" alt="Image generated with 100 inference steps">
+            <div class="caption">Generate images using num_inference_steps=100</div>
+        </div>
+    </div>
+    <div class="row">
+        <p>The random seed I am using during this project is 100. Between 30 and 100 inference steps, there was not a huge difference in some of the images. However, I did notice that the images followed style prompts with better quality. For example, both “watercolor paintings” followed the art style much closer at 100 steps than 30 steps, and the “vintage photograph” follows the “vintage” style closer at 100 steps as well. This makes sense because the more steps the model takes, the higher quality the results will be at the cost of inference speed. It had time to not only follow the basic textual prompt but also nuances such as watercolor and vintage in the prompts.</p>
+    </div>
+
+    <h2>Part 1: Sampling Loops</h2>
+
+    <div class="row">
+        <h4>1.1: Forward Noising</h4>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.1.png" alt="Forward Noising images">
+        </div>
+    </div>
+    <div class="row">
+        <p>This part is performing the noising process on the image of the Campanile at various timesteps. As the number of time steps, more and more of the Gaussian noise is introduced into the image, causing increasing amounts of the multicolored blurring effect. To implement this, we sample the noise from a Gaussian with mean sqrt(alpha)*x_0, where alpha is obtained from the alphas_cumprod variable; we use noise derived from torch.randn_like.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.2: Classical Denoising</h4>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.2.png" alt="Classical Denoising images">
+        </div>
+    </div>
+    <div class="row">
+        <p>Here we attempt to use Gaussian blur filtering to remove the noise we introduced in part 1.1. While the Gaussian blur (implemented using torchvision.transforms.functional.gaussian_blur) does remove the sharp artifacts introduced by the multicolor static in the noising process, we see that it also blurs the image itself. Thus, the blurring works somewhat well at lower timesteps when not too much noise has been introduced and allows the viewer to make out the shape of the Campanile at higher noise levels, but cannot reliably denoise the Campanile very well.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.3: One-Step Denoising</h4>
+    </div>
+    <div class="row" style="flex-direction: column; align-items: center;">
+        <div>
+            <img src="part_a/1.2.png" alt="One-Step Denoising first image">
+        </div>
+        <div>
+            <img src="part_a/1.3.png" alt="One-Step Denoising second image">
+        </div>
+    </div>
+    <div class="row">
+        <p>This one-step denoising evidently has much better results than the previous part. Instead of directly trying to remove the noise, one-step denoising uses a UNet to recover Gaussian noise from an image. This UNet was trained on a very large dataset of pairs of images, essentially trying to find the original image that can be noised to find a noisy image similar to ours. As we can see, the denoising process results in a denoised image that is very similar to our original one. While there are small differences in the exact tower in the produced image, we can see that it is very close to the Campanile. We implement this by first using the previously implemented forward function to add noise to the image, then estimating the noise by passing it through stage_1.unet. Then, we undergo the denoising process using the noise estimate before visualizing it.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.4: Iterative Denoising</h4>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.4.png" alt="Iterative Denoising images">
+        </div>
+    </div>
+    <div class="row">
+        <p>While part 1.3 produced better results than part 1.2, we notice that detail is lost when denoising the more noisy images. Therefore, instead of only denoising for one step, we can use iterative denoising to estimate the noise at each step. We see that the resulting image is much higher in detail, compared to the Gaussian blur and single-step denoising. To implement this, we create a list called strided_timesteps, which creates a schedule of timesteps decreasing by 30 from timestep 990 to timestep 0. We implement the iterative denoising method, which denoises an image starting at timestep[i_start] and applies the DDPM equations to obtain the image at timestep[i_start + 1], iteratively continuing until we achieve a clean image.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.5: Diffusion Model Sampling</h4>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.5.png" alt="Diffusion Model Sampling results">
+        </div>
+    </div>
+    <div class="row">
+        <p>Here we attempt to denoise an image of pure noise with the prompt “a high quality photo.” We see that we have random diverse images of decent but not amazing quality. To implement this, we use the iterative_denoise function we made in the previous part, with i_start=0 and passing in pure noise (created with torch.randn) to start the denoising process at.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.6: Classifier-Free Guidance (CFG)</h4>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.6.png" alt="Classifier-Free Guidance results">
+        </div>
+    </div>
+    <div class="row">
+        <p>To improve the results from the previous part, we use Classifier-Free Guidance, which improves image quality at the price of image diversity. We impose a condition (“a high quality photo”); the new noise estimate will now depend on both the unconditional and conditional noise estimate. In these images, the CFG scale is 7, allowing the prompt to become a condition. We see that as a result, the images are higher quality with more vibrant colors and details.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.7: Image-to-Image Translation</h4>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.7_campanile.png" alt="Image-to-Image translation of Campanile">
+        </div>
+    </div>
+    <div class="row">
+        <p>This is the edited version of the campanile, where the resulting image becomes closer to the original image as i_start increases. This was done by taking the original image, noising it, and denoising it. We see this because when more noise is applied, the model must “hallucinate” new things, as can be seen by how different the leftmost images are from the original. Therefore, this process effectively "edits" the original image.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.7_trot.png" alt="Image-to-Image translation of Turkey Trot selfie">
+        </div>
+        <div>
+            <img src="part_a/turkey_trot.jpeg" alt="Original Turkey Trot selfie">
+        </div>
+    </div>
+    <div class="row">
+        <p>Once again, we see the edits of my friends’ and my Turkey Trot selfie getting closer and closer to the original image that is on the right. The edits start very far away from the true image and slowly introduce more and more people until it matches the original.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.7_hotpot.png" alt="Image-to-Image translation of hotpot photo">
+        </div>
+        <div>
+            <img src="part_a/hotpot.jpeg" alt="Original hotpot photo">
+        </div>
+    </div>
+    <div class="row">
+        <p>These are edits of my house’s Friendsgiving potluck. Once again, the images go from very unrelated to slowly matching the original shockingly well.</p>
+    </div>
+
+    <div class="row">
+        <h5>1.7.1: Hand-drawn and Web Images</h5>
+    </div>
+    <div class="row">
+        <p>Experimenting with hand-drawn/non-realistic images is very interesting because we can see how they project onto the natural image manifold. Below are examples containing Salvador Dali’s <i>The Persistence of Memory</i>, as well as a hand-drawn flower and Christmas tree. In all of these examples, we can see interesting representations of the final drawings, such as a person in nature for Dali’s painting, a realistic version of the flower I drew, and a person wearing a green skirt for the Christmas tree.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/dali_edit.png" alt="Edited Dali painting">
+        </div>
+        <div>
+            <img src="part_a/dali.png" alt="Original Dali painting">
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/flower_edit.png" alt="Edited hand-drawn flower">
+        </div>
+        <div>
+            <img src="part_a/flower.png" alt="Hand-drawn flower">
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/xmas_edit.png" alt="Edited hand-drawn Christmas tree">
+        </div>
+        <div>
+            <img src="part_a/xmas.png" alt="Hand-drawn Christmas tree">
+        </div>
+    </div>
+
+    <div class="row">
+        <h5>1.7.2: Inpainting</h5>
+    </div>
+    <div class="row">
+        <p>We can also implement inpainting using interesting masks. With a binary mask applied, the new image will have the same content as the original where m is 0 and new content where m is 1. See some examples below!</p>
+    </div>
+    
+    <div class="inpainting-row">
+        <div class="inpainting-item">
+            <img src="part_a/campanile_inpaint.png" alt="Campanile inpainting result">
+            <div class="caption">This Campanile had a square mask applied to the top of it. We can see that new content was generated for the tip of the building, while the remainder of the image remained the same. Note that this result is slightly different from the original because I ran the upsample method for better visualization purposes, which runs the image through part of the diffusion model again.</div>
+        </div>
+        <div class="inpainting-item">
+            <img src="part_a/turkey_inpainted.png" alt="Turkey Trot inpainting result">
+            <div class="caption">The mask used in this example was a circular mask on the face of my friend taking the selfie. While the lighting and colors make it evident what was inpainted, the positioning of the newly generated person was impressively correct.</div>
+        </div>
+        <div class="inpainting-item">
+            <img src="part_a/hotpot_inpainted.png" alt="Hotpot inpainting result">
+            <div class="caption">The mask used in this example was the bottom half of the image. The newly generated content blended in very seamlessly with the top half of the image, mimicking the original image of our hot pot.</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <h5>1.7.3: Text-Conditional Image-to-image Translation</h5>
+    </div>
+    <div class="row">
+        <p>In this part, we guide projection with a text prompt, adding a layer of guidance to the original process of projecting to the natural image manifold. In my results, I have used the prompt “a vintage photograph of an office building.” The images gradually look more like the original image but start with the image in the text prompt.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.7.3_campanile.png" alt="Text-conditional I2I Campanile">
+            <div class="caption">The vintage office building slowly morphs into the Campanile, and it is interesting to see how parts of the office building’s architecture get edited into the Campanile.</div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.7.3_turkey.png" alt="Text-conditional I2I Turkey Trot">
+            <div class="caption">This example does not have as smooth of a transition from the office building to the people, but we can see the colors slowly increasing as the text conditioning decreases.</div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/1.7.3_hotpot.png" alt="Text-conditional I2I Hotpot">
+            <div class="caption">We can see the colors of the office building slowly increase and the building become more simplistic until it matches a table with food and plates on it.</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <h4>1.8: Visual Anagrams</h4>
+    </div>
+    <div class="row">
+        <p>To make visual anagrams, we run two denoising processes; one with the image right side up (prompt 1) and the other upside down (prompt 2). To get the anagram, we take the average of the two noise estimates to get the final noise estimate. Note that we are using CFG for all of these parts.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/anagram1_up.png" alt="Visual Anagram up result">
+            <div class="caption">prompt: "a watercolor painting of a lake and mountains”</div>
+        </div>
+        <div>
+            <img src="part_a/anagram1_flip.png" alt="Visual Anagram flip result">
+            <div class="caption">prompt: a photo of a family around a christmas tree</div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/anagram2_up.png" alt="Second Visual Anagram up result">
+            <div class="caption">prompt: a photo of vegetables</div>
+        </div>
+        <div>
+            <img src="part_a/anagram2_flip.png" alt="Second Visual Anagram flip result">
+            <div class="caption">a photo of a mountain range</div>
+        </div>
+    </div>
+    <div class="row">
+        <p>These anagrams performed remarkably well and I thought it was so cool how the images were able to be so evident but also follow their corresponding text prompts so closely.</p>
+    </div>
+
+    <div class="row">
+        <h4>1.9: Hybrid Images</h4>
+    </div>
+    <div class="row">
+        <p>To generate hybrid images, we estimate the noise with two different text prompts and run the denoising twice. Then, to combine them, we run a lowpass filter to extract the low frequencies of one and a highness filter to extract the high frequencies of the other.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/hybrid1.png" alt="First hybrid image component 1">
+        </div>
+        <div>
+            <img src="part_a/hybrid1_2.png" alt="First hybrid image component 2">
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <div class="caption">hybrid image of the prompts: a lithograph of flowers, a lithograph of a teddy bear</div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_a/hybrid2.png" alt="Second hybrid image component 1">
+        </div>
+        <div>
+            <img src="part_a/hybrid2_2.png" alt="Second hybrid image component 2">
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <div class="caption">hybrid image of the prompts: a photo of vegetables, a photo of a mountain range</div>
+        </div>
+    </div>
+    <div class="row">
+        <p>These were very interesting results and made me realize that the prompts that I chose were very important to the hybrid quality. For example, a mountain range and vegetables made a viable hybrid because the colors and shapes were plausible to be mixed. The teddy bear and flower example struggled slightly; I think this was partially because the prompts don’t mesh super well and they are both items that would be at the center of an image. However, I found it interesting how the noise estimates attempted to combine the two.</p>
+    </div>
+
+
+    <h2>Part B: Flow Matching!</h2>
+
+    <h4>Parts 1.1-1.3</h4>
+    <div class="row">
+        <p>In these parts, I implemented a single-step denoising UNet, trained the denoiser, and tested it on the MNIST dataset, out-of-distribution noise levels, and pure noise. The UNet consists of downsampling blocks, then upsampling blocks with skip connections. In order to train the denoiser, we generated data pairs of (noisy image, clean image), visualized below.</p>
+    </div>
+    
+    <div class="row row-full-width">
+        <div>
+            <img src="part_b/noising_process.png" alt="Visualization of the noising process over sigma">
+            <div class="caption">a visualization of the noising process over sigma = [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]. As the sigma increases, the image becomes noisier.</div>
+        </div>
+    </div>
+    <div class="row">
+        <p>To train the UNet, I used the recommended noise level of 0.5, batch size of 256, 5 epochs, hidden dimension D=128, L2 MSE loss, and Adam optimizer with learning rate of 1e-4. Below are a visualization of the training loss and denoising results over 1 and 5 epochs.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_b/1.2.1_training.png" alt="Training loss for unconditional UNet">
+            <div class="caption">loss while training unconditional UNet</div>
+        </div>
+    </div>
+    
+    <div class="row-partb-50">
+        <div>
+            <img src="part_b/1.2.1_epoch1.png" alt="Denoising results after 1 epoch">
+            <div class="caption">epoch 1 of training the denoiser with noise level=0.5; while the denoised image already looks quite similar to the original, we can see some noise around the number</div>
+        </div>
+        <div>
+            <img src="part_b/1.2.1_epoch5.png" alt="Denoising results after 5 epochs">
+            <div class="caption">epoch 5 of training the denoiser with noise level=0.5; the images look almost identical to the originals, with the noise artifacts removed</div>
+        </div>
+    </div>
+
+    <h4>1.2.2: Out-of-Distribution Testing</h4>
+    <div class="row">
+        Notice that our denoiser in the previous part was trained on noise level 0.5. If we noise our original images with varying amounts of noise, we can observe some differences in the denoised results.
+    </div>
+    <div class="row-partb-60">
+        <div>
+            <img src="part_b/out_of_distribution.png" alt="Out-of-distribution denoising results">
+            <div class="caption">Out-of-Distribution Denoising Results on varying noise levels</div>
+        </div>
+    </div>
+    <div class="row">
+        <p>Here are the denoised samples on varying levels of noise; the differences are subtle, but we can see that the denoiser does not work as well with images that were noised with a factor that was very different from 0.5, which it was trained on. For example, we can see clearly with noise levels 0.8 and 1.0 that there are noisy artifacts in the denoised image.</p>
+    </div>
+
+    <h4>1.2.3: Denoising Pure Noise</h4>
+    <div class="row">
+        <p>Next, we attempt to denoise pure, Gaussian noise to simulate a generative task. We observe something interesting about the results.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_b/1.2.3_training_loss.png" alt="Training loss for denoising pure noise">
+            <div class="caption">loss function for denoising pure noise over 1000 iterations; clearly, it is very random and not learning well</div>
+        </div>
+    </div>
+    
+    <div class="row-partb-50">
+        <div>
+            <img src="part_b/1.2.3_epoch1.png" alt="Denoising pure noise after 1 epoch">
+            <div class="caption">epoch 1 of training the denoiser on pure noise</div>
+        </div>
+        <div>
+            <img src="part_b/1.2.3_epoch5.png" alt="Denoising pure noise after 5 epochs">
+            <div class="caption">epoch 5 of training the denoiser on pure noise</div>
+        </div>
+    </div>
+    <div class="row">
+        <p>We get interesting results: the denoised image in both epoch 1 and 5 are very similar and don’t seem to form a number in MNIST. We somewhat see numbers formed such as 3 and 8, but it isn’t clear. This makes sense because our model attempts to minimize MSE loss, which minimizes the sum of squared distances to all training examples. Therefore, it essentially finds the average of all the digits in the MNIST dataset, creating a blurry image that somewhat resembles all the digits in the dataset.</p>
+    </div>
+
+    <h1>Part 2: Training a Flow Matching Model</h1>
+
+    <h4>2.1-2.3: Time-Conditioned UNet</h4>
+    <div class="row">
+        <p>In this part, we will use flow matching to adapt our UNet to generative tasks. We do this by predicting the “flow” from noisy data to clean data with respect to time. The UNet approximates a flow over a dt (time) and trains with a loss between the predicted flow and actual flow. In order to do this, we need to be able to inject time conditioning into the UNet using fully-connected blocks. </p>
+    </div>
+    <div class="row">
+        <p>To train the UNet, the training loop consists of choosing a random image x1 from the training set, adding noise to this image to get x_t for some random t (done by interpolation), and training the denoiser to predict the flow at this x_t. I used the recommended batch size of 64, hidden dimension D=64, Adam optimizer with initial learning rate of 1e-2 and exponential learning rate decay scheduler, and 10 epochs.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_b/2.3_training_loss.png" alt="Training loss for time-conditioned UNet">
+            <div class="caption">training loss over 10000 iterations taken every 200 iterations; as we can see, the loss converges quite quickly</div>
+        </div>
+    </div>
+    
+    <div class="row-partb-3">
+        <div class="partb-item-3">
+            <img src="part_b/2.3_epoch1.png" alt="Flow matching result after 1 epoch">
+            <div class="caption">Epoch 1 of training the time-conditioned UNet. We can see some resemblance of numbers, but the shapes are very abstract and have not quite converged yet.</div>
+        </div>
+        <div class="partb-item-3">
+            <img src="part_b/2.3_epoch5.png" alt="Flow matching result after 5 epochs">
+            <div class="caption">Epoch 5 of training the time-conditioned UNet. We see significant improvement, starting to show the actual shapes of specific numbers. However, some of the samples are still converging.</div>
+        </div>
+        <div class="partb-item-3">
+            <img src="part_b/2.3_epoch10.png" alt="Flow matching result after 10 epochs">
+            <div class="caption">Epoch 10 of training the time-conditioned UNet. While not perfect, this is much better! One can basically make out the numbers’ shapes. However, we can notice that the numbers look quite fragile and can be vague or ambiguous at times.</div>
+        </div>
+    </div>
+
+    <h4>2.4-2.6: Class-Conditioned UNet</h4>
+    <div class="row">
+        <p>Now, let’s work on making our UNet better by conditioning on the digit 0-9, which the MNIST dataset consists of. Class conditioning is implemented similarly to the time-conditioned UNet, injecting both the time and class signal into the UNet via FCBlocks. Furthermore, we use dropout 10% of the time as in classifier-free guidance (we use strength = 5.0); both the unconditional and conditional flow are used to calculate the final predicted flow that guides the model’s loss and learning.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_b/2.6_training_loss.png" alt="Training loss for class-conditioned UNet">
+            <div class="caption">loss curve over 10000 iterations for trading the class-conditioned UNet; again, we see that loss decreases and converges quite quickly</div>
+        </div>
+    </div>
+    
+    <div class="row-partb-3">
+        <div class="partb-item-3">
+            <img src="part_b/2.6_epoch1.png" alt="Class-conditioned result after 1 epoch">
+            <div class="caption">Epoch 1 of training the class-conditioned UNet. Already, the results are much better than the time-only-conditioned UNet. We see quite clearly what the numbers being sampled are. However, some such as the 5’s and 9’s are still somewhat ambiguous.</div>
+        </div>
+        <div class="partb-item-3">
+            <img src="part_b/2.6_epoch5.png" alt="Class-conditioned result after 5 epochs">
+            <div class="caption">Epoch 5 of training the class-conditioned UNet. Already, the results are much better than the time-only-conditioned UNet. Much better now! The numbers are quite clearly what we expect them to be.</div>
+        </div>
+        <div class="partb-item-3">
+            <img src="part_b/2.6_epoch10.png" alt="Class-conditioned result after 10 epochs">
+            <div class="caption">Epoch 10 of training the class-conditioned UNet. This looks great now! We can clearly see what each sample is supposed to be and very closely resembles the data in the MNIST dataset.</div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <p>Then, I removed the exponential learning rate scheduler to keep the model simpler. This still performed very well, but I also decreased the learning rate from 1e-2 to 1e-3 to account for the removed exponential decay. A way to think about this is that exponential decay allows for larger steps at first and smaller steps at the end, so we need to compensate for the fact that 1e-2 may be too large of a learning rate to maintain for the entire training process.</p>
+    </div>
+    <div class="row">
+        <div>
+            <img src="part_b/scheduler_removed.png" alt="Class-conditioned result without scheduler">
+            <div class="caption">Sample without exponential decay scheduler: we can see that with the decreased learning rate, the results are as good as the ones with the exponential decay rate scheduler. However, without this compensation for the removed scheduler, the results were marginally worse, though results were overall very good.</div>
+        </div>
+    </div>
+
+</body>
+</html>
