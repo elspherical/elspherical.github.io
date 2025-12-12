@@ -157,22 +157,26 @@
             width: auto;
             max-width: 100%;  
         }
-
-
         .row-partb-3 {
             display: flex;
-            justify-content: center; 
-            gap: 10px;
+            justify-content: center;
+            gap: 20px;         
             margin: 20px 0;
+            flex-wrap: wrap; 
         }
+
         .partb-item-3 {
+            flex: 1 1 30%;      
+            max-width: 32%;     
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 30%; 
         }
+
         .partb-item-3 img {
-             max-height: 200px; 
+            width: 100%;         /* fill the container */
+            height: auto;        /* preserve aspect ratio */
+            max-height: none;    /* remove previous max-height */
         }
 
         .caption {
